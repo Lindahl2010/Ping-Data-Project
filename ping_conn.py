@@ -13,11 +13,25 @@ def ping(hostname):
 
     return subprocess.call(command, stdout = out) == 0
 
+class PingData():
+
+    alldata = []
+
+    def __init__(self, ipaddr, sent, rec, lost, min, max, avg):
+        self.ipaddr = ipaddr
+        self.sent = sent
+        self.rec = rec
+        self.lost = lost
+        self.min = min
+        self.max = max
+        self.avg = avg
+        PingData.alldata.append(self)
+
 def parse_file(pingFile):
 
-    resp_data = list()  
+    resp_data= []
+    values = []
     pattern_list = ["ping statistics for", "packets", "minimum"]
-    ip_addr = list()
     
     try:
         with open(pingFile, "rt") as in_file:
@@ -26,18 +40,26 @@ def parse_file(pingFile):
                     pattern = re.compile(i, re.IGNORECASE)
                     if pattern.search(line) != None:
                         resp_data.append((linenum, line.rstrip("\n")))
-                        if i == pattern_list[0]:
-                            ip_addr.append(line.rstrip("\n"))
-                        if i == pattern_list[1]:
-                            ip_addr.append(line.rstrip("\n"))
+                        parse = re.compile("\d+")
+                        values.append(parse.findall(line))
+            
+                    
+            for i in range(0, len(resp_data)):
+                for i in range(0, len(resp_data[i])):
+                    print(resp_data)
+
             for linenum, line in resp_data:
                 print("Line ", linenum, ": ", line)
-
+            
+            print(values)
+            # for i in range(0, len(values), 3):
+            #     ipaddr = []
+            #     ipaddr.append(".".join(values[i]))
+            #     print(ipaddr)
+        
         with open("resp_data.txt", "w") as out_file:
             for linenum, line in resp_data:
                 out_file.write("%s\n" % line)
-
-        print(ip_addr)
 
     except FileNotFoundError:
         print("Log file not found.")
@@ -78,6 +100,15 @@ def db_conn():
             print(err)
 
 
+def switch_case(arg):
+
+    switcher = {
+        0: "ping statistics for",
+        1: "packets",
+        2: "minimum"
+    }
+
+    return switcher.get(arg, "Result not found.")
 
 #ping("www.google.com")
 parse_file("ping.txt")
