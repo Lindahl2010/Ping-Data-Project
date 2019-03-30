@@ -30,28 +30,55 @@ class PingData():
 def parse_file(pingFile):
 
     resp_data= []
-    values = []
+    ipaddr = []
+    resp = []
+    reply = []
     pattern_list = ["ping statistics for", "packets", "minimum"]
     
     try:
         with open(pingFile, "rt") as in_file:
-            for linenum, line in enumerate(in_file):
-                for i in pattern_list:
-                    pattern = re.compile(i, re.IGNORECASE)
-                    if pattern.search(line) != None:
-                        resp_data.append((linenum, line.rstrip("\n")))
-                        parse = re.compile("\d+")
-                        values.append(parse.findall(line))
+            # for linenum, line in enumerate(in_file):
+            #     for i in pattern_list:
+            #         pattern = re.compile(i, re.IGNORECASE)
+            #         if pattern.search(line) != None:
+            #             resp_data.append((linenum, line.rstrip("\n")))
+            #             parse = re.compile("\d+")
+            #             values.append(parse.findall(line))
             
-                    
-            for i in range(0, len(resp_data)):
-                for i in range(0, len(resp_data[i])):
-                    print(resp_data)
+            for linenum, line in enumerate(in_file):
+                resp_data.append((linenum, line.rstrip("\n")))
+                for i in range(0,2):
+                    parse = re.compile("\d+")
+                    if i == 0:
+                        arg = 0
+                        pattern = re.compile(switch_case(arg), re.IGNORECASE)
+                        ipaddr.append((linenum, line.rstrip("\n")))
+                    elif i == 1:
+                        arg = 1
+                        pattern = re.compile(switch_case(arg), re.IGNORECASE)
+                        resp.append((linenum, line.rstrip("\n")))
+                    elif i == 2:
+                        arg = 2
+                        pattern = re.compile(switch_case(arg), re.IGNORECASE)
+                        reply.append((linenum, line.rstrip("\n")))
+                    else:
+                        break
+
+            values = []
+            for i in range(0, len(ipaddr)):
+                parse = re.compile("\d+")
+                values.append(parse.findall(line))
+                for i in range(0, len(ipaddr[i])):
+                    print(values[i])
+
+            # for i in range(0, len(resp_data)):
+            #     for i in range(0, len(resp_data[i])):
+            #         print(resp_data)
 
             for linenum, line in resp_data:
                 print("Line ", linenum, ": ", line)
             
-            print(values)
+            print(ipaddr)
             # for i in range(0, len(values), 3):
             #     ipaddr = []
             #     ipaddr.append(".".join(values[i]))
