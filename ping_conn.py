@@ -5,6 +5,7 @@ from mysql.connector import errorcode
 import sys
 import re
 
+# Function to pass in a web address to ping 
 def ping(hostname):
 
     param = "-n" if platform.system() == "Windows" else "-c"
@@ -13,6 +14,7 @@ def ping(hostname):
 
     return subprocess.call(command, stdout = out) == 0
 
+# Ping class for grouping all of the data, making a ping object
 class PingData():
 
     alldata = []
@@ -27,14 +29,15 @@ class PingData():
         self.avg = avg
         PingData.alldata.append(self)
 
+# Function for parsing through the file  
 def parse_file(pingFile):
 
-    resp_data= []
-    ipaddr = []
-    resp = []
-    reply = []
-    pattern_list = ["ping statistics for", "packets", "minimum"]
+    # Initialized empty lists
+    resp_data, ipaddr, resp, reply = ([] for i in range(4))
+
+    # pattern_list = ["ping statistics for", "packets", "minimum"]
     
+    # Try catch for catching any errors when parsing through the lists/file
     try:
         with open(pingFile, "rt") as in_file:
             # for linenum, line in enumerate(in_file):
@@ -45,54 +48,35 @@ def parse_file(pingFile):
             #             parse = re.compile("\d+")
             #             values.append(parse.findall(line))
             
+            # For loop designed to implement a switch case type of design from C#
             for linenum, line in enumerate(in_file):
                 resp_data.append((linenum, line.rstrip("\n")))
-                for i in range(0,2):
+                for i in range(0,3):
                     parse = re.compile("\d+")
                     if i == 0:
                         arg = 0
                         pattern = re.compile(switch_case(arg), re.IGNORECASE)
-                        ipaddr.append((linenum, line.rstrip("\n")))
+                        if pattern.search(line) != None:
+                            ipaddr.append(".".join(parse.findall(line)))
                     elif i == 1:
                         arg = 1
                         pattern = re.compile(switch_case(arg), re.IGNORECASE)
-                        resp.append((linenum, line.rstrip("\n")))
+                        if pattern.search(line) != None:
+                            resp.append(" ".join(parse.findall(line)))
                     elif i == 2:
                         arg = 2
                         pattern = re.compile(switch_case(arg), re.IGNORECASE)
-                        reply.append((linenum, line.rstrip("\n")))
+                        if pattern.search(line) != None:
+                            reply.append(" ".join(parse.findall(line)))
                     else:
                         break
-
-            values = []
-            for i in range(0, len(ipaddr)):
-                parse = re.compile("\d+")
-                values.append(parse.findall(line))
-                for i in range(0, len(ipaddr[i])):
-                    print(values[i])
-
-            # for i in range(0, len(resp_data)):
-            #     for i in range(0, len(resp_data[i])):
-            #         print(resp_data)
-
-            for linenum, line in resp_data:
-                print("Line ", linenum, ": ", line)
-            
-            print(ipaddr)
-            # for i in range(0, len(values), 3):
-            #     ipaddr = []
-            #     ipaddr.append(".".join(values[i]))
-            #     print(ipaddr)
-        
-        with open("resp_data.txt", "w") as out_file:
-            for linenum, line in resp_data:
-                out_file.write("%s\n" % line)
 
     except FileNotFoundError:
         print("Log file not found.")
 
     return
 
+# Database connection & insertion function
 def db_conn():
 
     try:
@@ -101,21 +85,34 @@ def db_conn():
 
         cursor = conn.cursor()
 
-        #with open("resp_data.txt", "rt") as in_file:
-
-
         add_data = ("INSERT INTO Connection"
         "(IP_Address, Sent, Received, Lost, Min, Max, Avg)"
         "VALUES (%s, %(sent)s, %(rec)s, %(lost)s, %(min)s, %(max)s, %(avg)s)")
 
+        add_file = ("INSERT IGNORE INTO pingtxt (id, data) VALUES (%s, %s)")
+
+        with open("ping.txt", "rt") as in_file:
+            for linenum, line in enumerate(in_file):
+                id = int(linenum)
+                data = line.rstrip("\n")
+                data_text = (id, data)
+                cursor.execute(add_file, data_text)
+
+        # file = open("ping.txt", "rt")
+        # file_content = file.readlines()
+        # for line in file_content:
+        #     cursor.execute(add_file, (line.rstrip("\n"),))
+        # file.close()
+
         #data_ping = 
 
+        #cursor.execute(add_data, data_ping)
 
-        cursor.execute(add_data, data_ping)
-
-        if connection.is_connected():
+        if conn.is_connected():
             print("connection successful")
 
+        conn.commit()
+        cursor.close()
         conn.close()
 
     except mysql.connector.Error as err:
@@ -126,7 +123,7 @@ def db_conn():
         else:
             print(err)
 
-
+# Switch case arguments to search through the ping data file
 def switch_case(arg):
 
     switcher = {
@@ -139,4 +136,4 @@ def switch_case(arg):
 
 #ping("www.google.com")
 parse_file("ping.txt")
-#db_conn()
+db_conn()
