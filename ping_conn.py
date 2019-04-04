@@ -19,14 +19,10 @@ class PingData():
 
     alldata = []
 
-    def __init__(self, ipaddr, sent, rec, lost, min, max, avg):
+    def __init__(self, ipaddr, resp, reply):
         self.ipaddr = ipaddr
-        self.sent = sent
-        self.rec = rec
-        self.lost = lost
-        self.min = min
-        self.max = max
-        self.avg = avg
+        self.resp = resp
+        self.reply = reply
         PingData.alldata.append(self)
 
 # Function for parsing through the file  
@@ -71,13 +67,16 @@ def parse_file(pingFile):
                     else:
                         break
 
+            ping = PingData(ipaddr, resp, reply)              
+            db_conn(ping)
+
     except FileNotFoundError:
         print("Log file not found.")
 
     return
 
 # Database connection & insertion function
-def db_conn():
+def db_conn(ping):
 
     try:
         conn = mysql.connector.connect(host="192.168.26.139", database="demodb",
@@ -136,4 +135,3 @@ def switch_case(arg):
 
 #ping("www.google.com")
 parse_file("ping.txt")
-db_conn()
