@@ -6,8 +6,9 @@ import sys
 import re
 
 # Function to pass in a web address to ping 
-def ping(hostname):
+def ping_test():
 
+    hostname = input("Please enter a website to ping: ")
     param = "-n" if platform.system() == "Windows" else "-c"
     command = ["ping", param, "5", hostname]
     out = open("ping.txt", "a")
@@ -17,12 +18,15 @@ def ping(hostname):
 # Ping class for grouping all of the data, making a ping object
 class PingData():
 
-    alldata = []
+    alldata, ipaddress, response, replyi = ([] for i in range(4))
 
     def __init__(self, ipaddr, resp, reply):
         self.ipaddr = ipaddr
         self.resp = resp
         self.reply = reply
+        PingData.ipaddress.append(ipaddr)
+        PingData.response.append(resp)
+        PingData.replyi.append(reply)
         PingData.alldata.append(self)
 
 # Function for parsing through the file  
@@ -35,6 +39,9 @@ def parse_file(pingFile):
     
     # Try catch for catching any errors when parsing through the lists/file
     try:
+
+        ping_test()
+
         with open(pingFile, "rt") as in_file:
             # for linenum, line in enumerate(in_file):
             #     for i in pattern_list:
@@ -66,9 +73,13 @@ def parse_file(pingFile):
                             reply.append(" ".join(parse.findall(line)))
                     else:
                         break
+            
+            pinglist = []
+            for i in range(0,len(ipaddr)):
+                ping = PingData(ipaddr[i], resp[i], reply[i])
+                pinglist.append(ping)
 
-            ping = PingData(ipaddr, resp, reply)              
-            db_conn(ping)
+            db_conn(pinglist)
 
     except FileNotFoundError:
         print("Log file not found.")
@@ -76,7 +87,7 @@ def parse_file(pingFile):
     return
 
 # Database connection & insertion function
-def db_conn(ping):
+def db_conn(pinglist):
 
     try:
         conn = mysql.connector.connect(host="192.168.26.139", database="demodb",
@@ -86,7 +97,7 @@ def db_conn(ping):
 
         add_data = ("INSERT INTO Connection"
         "(IP_Address, Sent, Received, Lost, Min, Max, Avg)"
-        "VALUES (%s, %(sent)s, %(rec)s, %(lost)s, %(min)s, %(max)s, %(avg)s)")
+        "VALUES (%(IP_Address)s, %(sent)s, %(rec)s, %(lost)s, %(min)s, %(max)s, %(avg)s)")
 
         add_file = ("INSERT IGNORE INTO pingtxt (id, data) VALUES (%s, %s)")
 
@@ -97,15 +108,29 @@ def db_conn(ping):
                 data_text = (id, data)
                 cursor.execute(add_file, data_text)
 
-        # file = open("ping.txt", "rt")
-        # file_content = file.readlines()
-        # for line in file_content:
-        #     cursor.execute(add_file, (line.rstrip("\n"),))
-        # file.close()
+        for ping in pinglist:
+            for ip in ping.ipaddress:
+                IP_Address = ip
+            for resp in ping.response:
+                sent = resp[0]
+                rec = resp[2]
+                lost = resp[4]
+            for rep in ping.replyi:
+                min = rep[0]
+                max = rep[2]
+                avg = rep[4]
 
-        #data_ping = 
+        data_ping = {
+            'IP_Address': IP_Address,
+            'sent': sent,
+            'rec': rec,
+            'lost': lost,
+            'min': min,
+            'max': max,
+            'avg': avg
+        }
 
-        #cursor.execute(add_data, data_ping)
+        cursor.execute(add_data, data_ping)
 
         if conn.is_connected():
             print("connection successful")
@@ -133,5 +158,4 @@ def switch_case(arg):
 
     return switcher.get(arg, "Result not found.")
 
-#ping("www.google.com")
 parse_file("ping.txt")

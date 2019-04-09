@@ -1,49 +1,24 @@
 
-Pinging www.google.com [172.217.1.36] with 32 bytes of data:
-Reply from 172.217.1.36: bytes=32 time=13ms TTL=54
-Reply from 172.217.1.36: bytes=32 time=14ms TTL=54
-Reply from 172.217.1.36: bytes=32 time=14ms TTL=54
-Reply from 172.217.1.36: bytes=32 time=15ms TTL=54
-Reply from 172.217.1.36: bytes=32 time=15ms TTL=54
+Pinging www.google.com [172.217.4.228] with 32 bytes of data:
+Reply from 172.217.4.228: bytes=32 time=13ms TTL=54
+Reply from 172.217.4.228: bytes=32 time=14ms TTL=54
+Reply from 172.217.4.228: bytes=32 time=14ms TTL=54
+Reply from 172.217.4.228: bytes=32 time=15ms TTL=54
+Reply from 172.217.4.228: bytes=32 time=13ms TTL=54
 
-Ping statistics for 172.217.1.36:
+Ping statistics for 172.217.4.228:
     Packets: Sent = 5, Received = 5, Lost = 0 (0% loss),
 Approximate round trip times in milli-seconds:
-    Minimum = 13ms, Maximum = 15ms, Average = 14ms
+    Minimum = 13ms, Maximum = 15ms, Average = 13ms
 
-Pinging www.google.com [172.217.1.36] with 32 bytes of data:
-Reply from 172.217.1.36: bytes=32 time=14ms TTL=54
-Reply from 172.217.1.36: bytes=32 time=17ms TTL=54
-Reply from 172.217.1.36: bytes=32 time=13ms TTL=54
-Reply from 172.217.1.36: bytes=32 time=15ms TTL=54
-Reply from 172.217.1.36: bytes=32 time=15ms TTL=54
+Pinging youtube-ui.l.google.com [216.58.192.238] with 32 bytes of data:
+Reply from 216.58.192.238: bytes=32 time=13ms TTL=54
+Reply from 216.58.192.238: bytes=32 time=15ms TTL=54
+Reply from 216.58.192.238: bytes=32 time=13ms TTL=54
+Reply from 216.58.192.238: bytes=32 time=14ms TTL=54
+Reply from 216.58.192.238: bytes=32 time=18ms TTL=54
 
-Ping statistics for 172.217.1.36:
+Ping statistics for 216.58.192.238:
     Packets: Sent = 5, Received = 5, Lost = 0 (0% loss),
 Approximate round trip times in milli-seconds:
-    Minimum = 13ms, Maximum = 17ms, Average = 14ms
-
-
-Pinging www.google.com [172.217.8.164] with 32 bytes of data:
-Reply from 172.217.8.164: bytes=32 time=14ms TTL=54
-Reply from 172.217.8.164: bytes=32 time=15ms TTL=54
-Reply from 172.217.8.164: bytes=32 time=14ms TTL=54
-Reply from 172.217.8.164: bytes=32 time=14ms TTL=54
-Reply from 172.217.8.164: bytes=32 time=14ms TTL=54
-
-Ping statistics for 172.217.8.164:
-    Packets: Sent = 5, Received = 5, Lost = 0 (0% loss),
-Approximate round trip times in milli-seconds:
-    Minimum = 14ms, Maximum = 15ms, Average = 14ms
-
-Pinging www.google.com [172.217.8.164] with 32 bytes of data:
-Reply from 172.217.8.164: bytes=32 time=16ms TTL=54
-Reply from 172.217.8.164: bytes=32 time=15ms TTL=54
-Reply from 172.217.8.164: bytes=32 time=16ms TTL=54
-Reply from 172.217.8.164: bytes=32 time=14ms TTL=54
-Reply from 172.217.8.164: bytes=32 time=15ms TTL=54
-
-Ping statistics for 172.217.8.164:
-    Packets: Sent = 5, Received = 5, Lost = 0 (0% loss),
-Approximate round trip times in milli-seconds:
-    Minimum = 14ms, Maximum = 16ms, Average = 15ms
+    Minimum = 13ms, Maximum = 18ms, Average = 14ms
